@@ -1,0 +1,50 @@
+---
+title: "team"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+HAPPY <- readRDS("HAPPY.rds")
+head(HAPPY)
+library(dplyr)
+library(ggplot2)
+
+HAPPY[HAPPY == 'IAP'] <- NA
+HAPPY[HAPPY == 'NA'] <- NA
+HAPPY[HAPPY == 'DK'] <- NA
+
+HAPPY <- HAPPY %>% mutate_if(is.character, as.factor) %>% mutate(AGE = recode(AGE, "89 OR OLDER" = "89")) %>% mutate(AGE = as.numeric(levels(AGE)[AGE]))
+
+HAPPY <- HAPPY %>% mutate(HAPPY = factor(HAPPY, levels = c('NOT TOO HAPPY', 'PRETTY HAPPY', 'VERY HAPPY')))
+```
+
+1. Investigate the distributions of 2 different variables.
+
+```{r}
+ggplot(HAPPY, aes(x = AGE, fill = HAPPY)) + geom_histogram() + facet_grid((~SEX))
+
+
+```
+The first chart shows that the Happiness distribution is skewed right. There are more responses in the younger ages.
+
+
+
+2. Investigate the relationship between happiness and three other variables in the data.
+
+```{r}
+ggplot(HAPPY, aes(x = HAPPY, fill = SEX)) + geom_bar() + labs(x = 'Happiness Type', title = 'Happiness Type per Sex')
+
+ggplot(HAPPY, aes(x = HAPPY, fill = MARITAL)) + geom_bar(position = position_dodge()) + coord_flip()
+```
+
+The first graph shows that there are more females that participated in the study than males. The males' ratio was the highest in the 'not too happy' group. The second chart shows the happiness based on marital status. One thing that stands out is that the highest count in the 'not too happy' group are married. Married people make up the majority of the responses.
+
+
+
+3. What do you learn from the data set? Write one or two paragraphs to describe.
+
+We learned that as people get older, they tend to get happier. We also learned that marital status doesn't really have an effect on happiness.
