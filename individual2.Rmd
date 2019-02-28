@@ -1,0 +1,54 @@
+---
+title: "individual2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+HAPPY <- readRDS("HAPPY.rds")
+```
+
+1.
+```{r}
+HAPPY[HAPPY == 'IAP'] <- NA
+HAPPY[HAPPY == 'NA'] <- NA
+HAPPY[HAPPY == 'DK'] <- NA
+```
+
+2.
+```{r}
+HAPPY <- HAPPY %>% mutate_if(is.character, as.factor) %>% mutate(AGE = recode(AGE, "89 OR OLDER" = "89")) %>% mutate(AGE = as.numeric(levels(AGE)[AGE]))
+```
+
+3.
+```{r}
+HAPPY <- HAPPY %>% mutate(HAPPY = factor(HAPPY, levels = c('NOT TOO HAPPY', 'PRETTY HAPPY', 'VERY HAPPY')))
+ggplot(HAPPY, aes(x=HAPPY)) + geom_bar()
+ggplot(HAPPY, aes(x=AGE, fill=SEX)) + geom_histogram(binwidth = 4) + facet_grid(~HAPPY)
+```
+
+Part 2. #1
+```{r}
+ggplot(HAPPY, aes(x=AGE, fill=HAPPY)) + geom_histogram() + facet_grid((~MARITAL))
+
+ggplot(HAPPY, aes(x=AGE, color=HAPPY)) + geom_histogram(binwidth=2) + facet_grid(~HEALTH)
+```
+The first set of histograms shows that most people are pretty happy or very happy regardless of their age and marital status. The distributions skew right, except for widows. This is probably because young people are unlikely to become widows. The second set of histograms shows that people tend to be happier when their health is better. The distributions for "Excellent", "Good", and "Fair" skew right, while "Poor" skews left. This is probably because people with worse health tend to be older.
+
+
+Part 2. #2
+```{r}
+ggplot(HAPPY, aes(x=HAPPY, fill=DEGREE)) + geom_bar(position = position_dodge())
+ggplot(HAPPY, aes(x=HAPPY, fill=POLVIEWS)) + geom_bar(position = position_stack(reverse = TRUE))
+ggplot(HAPPY, aes(x=AGE, color=HAPPY)) + geom_histogram(binwidth=2) + facet_wrap(~PARTYID)
+```
+The first plot shows equal distributions of the levels of happiness regardless of the person's education. I was surprised that a higher level of education didn't correlate to a general increase in happiness. The second plot shows that most people are happy regardless of their political views. Having a more conservative or liberal view didn't correlate to the person's level of happiness. The third plot shows that most people identify with a politial party that isn't extreme, and that happiness levels once again are not effected by their party identification.
+
+Part 2. #3
+This data set shows that people tend to be happy regardless of their political views, education, marital status, and sex. The biggest factor in determining one's happiness is their health. Older people are more likely to have health issues leading to their unhappiness. A lot of the graphs were skewed right because there were less old people in the survey.
