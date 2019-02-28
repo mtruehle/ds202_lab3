@@ -27,9 +27,10 @@ HAPPY <- HAPPY %>% mutate(HAPPY = factor(HAPPY, levels = c('NOT TOO HAPPY', 'PRE
 ```{r}
 ggplot(HAPPY, aes(x = AGE, fill = HAPPY)) + geom_histogram() + facet_grid((~SEX))
 
-
+ggplot(HAPPY, aes(x=AGE, color=HAPPY)) + geom_histogram(binwidth=2) + facet_grid(~HEALTH)
 ```
 The first chart shows that the Happiness distribution is skewed right. There are more responses in the younger ages.
+The second chart shows that people tend to be happier when their health is better. Its skewed left except for "Poor", because older people are more likely to have poor health.
 
 
 
@@ -39,12 +40,14 @@ The first chart shows that the Happiness distribution is skewed right. There are
 ggplot(HAPPY, aes(x = HAPPY, fill = SEX)) + geom_bar() + labs(x = 'Happiness Type', title = 'Happiness Type per Sex')
 
 ggplot(HAPPY, aes(x = HAPPY, fill = MARITAL)) + geom_bar(position = position_dodge()) + coord_flip()
+
+ggplot(HAPPY, aes(x=AGE, color=HAPPY)) + geom_histogram(binwidth=2) + facet_wrap(~PARTYID)
 ```
 
-The first graph shows that there are more females that participated in the study than males. The males' ratio was the highest in the 'not too happy' group. The second chart shows the happiness based on marital status. One thing that stands out is that the highest count in the 'not too happy' group are married. Married people make up the majority of the responses.
+The first graph shows that there are more females that participated in the study than males. The males' ratio was the highest in the 'not too happy' group. The second chart shows the happiness based on marital status. One thing that stands out is that the highest count in the 'not too happy' group are married. Married people make up the majority of the responses. The third plot shows that most people identify with a politial party that isn't extreme, and that happiness levels once again are not effected by their party identification.
 
 
 
 3. What do you learn from the data set? Write one or two paragraphs to describe.
 
-We learned that as people get older, they tend to get happier. We also learned that marital status doesn't really have an effect on happiness.
+We learned that as people get older, they tend to get happier. We also learned that marital status doesn't really have an effect on happiness. We learned that a person's health is very impactful to their level of happiness. Also that Older people are more likely to have health issues leading to their unhappiness. A lot of the graphs were skewed right because there were less old people in the survey.
