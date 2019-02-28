@@ -1,0 +1,65 @@
+---
+title: "individual1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+The Dataset:
+
+```{r}
+HAPPY <- readRDS("HAPPY.rds")
+head(HAPPY)
+library(dplyr)
+library(ggplot2)
+```
+
+Cleaning the Data:
+1. Data cleaning: the values "IAP", "DK" and "NA" all encode missing values. Replace all of these instances by the value NA.
+
+```{r}
+HAPPY[HAPPY == 'IAP'] <- NA
+HAPPY[HAPPY == 'NA'] <- NA
+HAPPY[HAPPY == 'DK'] <- NA
+```
+
+2. Check the type of the variable and cast into the right type (factor variable for categorical variables). For age, change "89 OR OLDER" to 89 and assume the variable should be numeric.
+
+```{r}
+HAPPY <- HAPPY %>% mutate_if(is.character, as.factor) %>% mutate(AGE = recode(AGE, "89 OR OLDER" = "89")) %>% mutate(AGE = as.numeric(levels(AGE)[AGE]))
+```
+
+3. Bring all levels of factors into a sensible order. For marital you could e.g. order the levels according to average age.
+
+```{r}
+HAPPY <- HAPPY %>% mutate(HAPPY = factor(HAPPY, levels = c('NOT TOO HAPPY', 'PRETTY HAPPY', 'VERY HAPPY')))
+```
+
+Exploration:
+1. Investigate the distributions of 2 different variables.
+
+```{r}
+ggplot(HAPPY, aes(x = AGE, fill = HAPPY)) + geom_histogram() + facet_grid((~SEX))
+
+ggplot(HAPPY, aes(x= AGE, color = HAPPY)) + geom_histogram(binwidth = 3) + facet_grid(~MARITAL)
+
+```
+For the first set of histograms, it shows that on average, no matter your age or sex, the most popular happiness level is pretty happy. Both distributions are skewed right. In the second set of histograms, it shows that on average, no matter your marital status, people are pretty happy. One significant thing that stands out in this set is that all the histograms are skewed right except for the Widowed status, where it is skewed left. This is because older people are more likely to become widowed than younger people.
+
+2. Investigate the relationship between happiness and three other variables in the data.
+
+```{r}
+ggplot(HAPPY, aes(x = HAPPY, fill = SEX)) + geom_bar() + labs(x = 'Happiness Type', title = 'Happiness Type per Sex') 
+
+ggplot(HAPPY, aes(x = HAPPY, fill = MARITAL)) + geom_bar(position = position_dodge()) + coord_flip()
+
+ggplot(HAPPY, aes(x = '', fill = HAPPY)) + geom_bar() + coord_polar(theta = 'y')
+
+```
+The first graph shows that there are more females that participated in the study than males. The males' ratio was the highest in the 'not too happy' group. The second chart shows the happiness based on marital status. One thing that stands out is that the highest count in the 'not too happy' group are married. Married people make up the majority of the responses. In the third chart, it shows that the majority of the people who responded to the poll are, in general, pretty happy.
+
+3. What do you learn from the data set? Write one or two paragraphs to describe.
+
+I learned that a majority of people tend to be pretty happy no matter their marital status or sex. A majority of the people who responded to the survey were younger and this skewed the histograms. Younger people tended to be more in the middle with their happiness. This is partly because there are more responses for the younger ages. But, as people get older, they tend to get happier.
+
